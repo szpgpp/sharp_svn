@@ -39,10 +39,12 @@ namespace SharpSvnDemo
                         Console.WriteLine(" to getinfo {0} ...", repoUrl);
                         SvnInfoEventArgs info;
                         client.GetInfo(new Uri(repoUrl), out info);
-                        Console.WriteLine(" Reversion:{0} lastChangedReversion:{1} lastChangedTime:{2}"
+                        Console.WriteLine(" Reversion:{0} lastChangedReversion:{1} lastChangedTime:{2} islocked:{3}"
                             , info.Revision
                             , info.LastChangeRevision
-                            , info.LastChangeTime);
+                            , info.LastChangeTime
+                            , info.Lock != null
+                            );
                     }
                     else
                     {
@@ -52,10 +54,12 @@ namespace SharpSvnDemo
                         {
                             SvnInfoEventArgs info;
                             client.GetInfo(new SvnPathTarget(local_path), out info);
-                            Console.WriteLine(" Reversion:{0} lastChangedReversion:{1} lastChangedTime:{2}"
+                            Console.WriteLine(" Reversion:{0} lastChangedReversion:{1} lastChangedTime:{2} islocked:{3}"
                                 , info.Revision
                                 , info.LastChangeRevision
-                                , info.LastChangeTime);
+                                , info.LastChangeTime
+                                , info.Lock != null
+                            );
                         }
                         catch (SvnException svnEx)
                         {
@@ -252,7 +256,7 @@ namespace SharpSvnDemo
                     Console.WriteLine(" 8.unlock [localpath]");
                     Console.WriteLine(" 9.remotelock [localpath]");
                     Console.WriteLine(" 10.remoteunlock [localpath]");
-                    Console.WriteLine(" 10.copy [localpath] [localpath]");
+                    Console.WriteLine(" 10.export [localpath] [localpath]");
                 }
             }
         }
