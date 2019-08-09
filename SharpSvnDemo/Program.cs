@@ -18,6 +18,10 @@ namespace SharpSvnDemo
                 e.UserName = "szp";
                 e.Password = "85071163";
             };
+            client.Conflict += (sender, e) =>
+            {
+                Console.WriteLine(" {0}","there is conflict in your local, please dealing with it first!");
+            };
             while (true)
             {
                 Console.Write(">");
@@ -214,16 +218,41 @@ namespace SharpSvnDemo
                     else
                         Console.WriteLine(" faild to lock {0}!", local_path);
                 }
+                else if (cmd == "export")
+                {
+                    var local_path = String.Format(@"E:\SVN_BASE\{0}", cmd_param);
+                    var dest_path = arr_cmd[2];
+                    Console.WriteLine(" to unlock {0} ...", local_path);
+                    var uri = client.GetUriFromWorkingCopy(local_path);
+                    try
+                    {
+                        var r = client.Export(new SvnUriTarget(uri), dest_path);
+                        if (r)
+                        {
+                            Console.WriteLine(" export {0} to {1} successfully!", uri, dest_path);
+                        }
+                        else
+                            Console.WriteLine(" faild to export {0} to {1}!", uri, dest_path);
+                    }
+                    catch(SvnException svnEx)
+                    {
+                        Console.WriteLine(" {0}(1)", svnEx.Message, svnEx.SvnErrorCode);
+                    }
+                }
                 else if (cmd == "help" || cmd == "?")
                 {
-                    Console.WriteLine(" 1.getsvnstate");
+                    Console.WriteLine(" 1.getinfo [localpath] or [null] or [remotepath]");
                     Console.WriteLine(" 2.getstate [localpath]");
                     Console.WriteLine(" 2.geturi [localpath]");
                     Console.WriteLine(" 3.checkout [localpath]");
                     Console.WriteLine(" 4.add [localpath]");
                     Console.WriteLine(" 5.commit [localpath]");
                     Console.WriteLine(" 6.update [localpath]");
-                    Console.WriteLine(" 7.getinfo [localpath]");
+                    Console.WriteLine(" 7.lock [localpath]");
+                    Console.WriteLine(" 8.unlock [localpath]");
+                    Console.WriteLine(" 9.remotelock [localpath]");
+                    Console.WriteLine(" 10.remoteunlock [localpath]");
+                    Console.WriteLine(" 10.copy [localpath] [localpath]");
                 }
             }
         }
